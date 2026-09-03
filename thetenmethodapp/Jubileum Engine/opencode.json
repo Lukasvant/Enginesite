@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "openrouter/moonshotai/kimi-k2.7-code",
+  "default_agent": "build",
+  "disabled_providers": ["openai"],
+  "instructions": ["AGENTS.md"],
+  "agent": {
+    "k3-senior": {
+      "model": "openrouter/moonshotai/kimi-k3",
+      "mode": "subagent",
+      "description": "Senior escalation agent for complex diagnosis, architecture decisions, and implementation planning. Not for routine coding."
+    }
+  }
+}

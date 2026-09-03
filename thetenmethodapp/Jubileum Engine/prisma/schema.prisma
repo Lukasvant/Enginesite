@@ -1,0 +1,177 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id              String   @id @default(uuid())
+  name            String
+  domain          String?
+  website         String?
+  city            String?
+  province        String?
+  industry        String?
+  employeeSize    String?  // e.g. "10-50", "50-250"
+  foundationYear  Int?
+  foundationDate  String?  // ISO date if known, e.g. "1977-03-15"
+  foundationConfidence Float?  // 0.0 - 1.0
+  foundationEvidence   String? // human-readable evidence summary
+  status          String   @default("ACTIVE")
+  isDemo          Boolean  @default(false)
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  contacts        Contact[]
+  leads           Lead[]
+  researchSources ResearchSource[]
+  claims          HistoricalClaim[]
+  events          HistoricalEvent[]
+  previews        Preview[]
+  costRecords     CostRecord[]
+
+  @@index([name])
+  @@index([foundationYear])
+}
+
+model Contact {
+  id        String  @id @default(uuid())
+  companyId String
+  name      String
+  role      String?
+  email     String?
+  linkedIn  String?
+  isPrimary Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Lead {
+  id          String     @id @default(uuid())
+  companyId   String     @unique
+  stage       String     @default("FOUND")
+  score       Int        @default(0)
+  scoreReasons String?   // JSON array of reason strings
+  nextAction  String?
+  doNotContact Boolean   @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  company         Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  outreachMessages OutreachMessage[]
+  outreachActivities OutreachActivity[]
+}
+
+model ResearchSource {
+  id          String   @id @default(uuid())
+  companyId   String
+  title       String
+  url         String?
+  sourceType  String   // WEBSITE, NEWS, ARCHIVE, MANUAL, etc.
+  content     String?  // excerpt or raw content
+  discoveredAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  claims HistoricalClaim[]
+}
+
+model HistoricalClaim {
+  id          String           @id @default(uuid())
+  companyId   String
+  sourceId    String?
+  claim       String
+  claimType   String?          // FOUNDATION, EXPANSION, ACQUISITION, etc.
+  sourceExcerpt String?
+  sourceDate  String?
+  confidence  Float            @default(0.0)
+  status      String           @default("UNCERTAIN")
+  reviewedAt  DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  company Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  source  ResearchSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+}
+
+model HistoricalEvent {
+  id          String    @id @default(uuid())
+  companyId   String
+  date        String?   // ISO date or year only
+  year        Int?
+  title       String
+  description String?
+  source      String?
+  sourceUrl   String?
+  excerpt     String?
+  confidence  Float     @default(0.0)
+  status      String      @default("VERIFIED")
+  isMilestone Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Preview {
+  id          String   @id @default(uuid())
+  companyId   String
+  token       String   @unique @default(uuid())
+  title       String?
+  intro       String?
+  milestones  String?  // JSON array of {year, title, description}
+  closing     String?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model OutreachMessage {
+  id          String   @id @default(uuid())
+  leadId      String
+  channel     String   // EMAIL, LINKEDIN, etc.
+  subject     String?
+  body        String
+  isApproved  Boolean  @default(false)
+  sentAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model OutreachActivity {
+  id        String   @id @default(uuid())
+  leadId    String
+  type      String   // FOLLOW_UP, REPLY, MEETING, NOTE, STATUS_CHANGE
+  note      String?
+  createdAt DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model CostRecord {
+  id          String   @id @default(uuid())
+  companyId   String?
+  category    String   // LLM, SEARCH, OCR, STORAGE, EMAIL, OTHER
+  amount      Float
+  currency    String   @default("EUR")
+  description String?
+  createdAt   DateTime @default(now())
+
+  company Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+}
+
+// NOTE: SQLite does not support native enums. Use string constants validated in code.
