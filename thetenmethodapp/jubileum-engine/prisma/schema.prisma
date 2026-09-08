@@ -12,6 +12,7 @@ datasource db {
 
 model Company {
   id              String   @id @default(uuid())
+  sourceKvkNumber String?  @unique
   name            String
   domain          String?
   website         String?
