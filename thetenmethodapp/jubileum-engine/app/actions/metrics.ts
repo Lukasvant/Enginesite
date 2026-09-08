@@ -1,8 +1,10 @@
 "use server";
 
 import { prisma } from "@/app/lib/prisma";
+import { requireAuth } from "@/app/lib/auth";
 
 export async function getMetrics() {
+  await requireAuth();
   const totalCompanies = await prisma.company.count();
   const totalLeads = await prisma.lead.count();
   const previews = await prisma.preview.count();

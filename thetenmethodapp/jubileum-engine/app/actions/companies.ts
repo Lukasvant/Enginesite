@@ -9,6 +9,7 @@ import { generatePreviewContent } from "@/app/lib/preview";
 import { generateOutreachDraft } from "@/app/lib/outreach";
 import { CLAIM_STATUS, LEAD_STAGE } from "@/app/lib/constants";
 import Papa from "papaparse";
+import { requireAuth } from "@/app/lib/auth";
 
 export type CompanyInput = {
   name: string;
@@ -28,6 +29,7 @@ export type CompanyInput = {
 };
 
 export async function createCompany(data: CompanyInput) {
+  await requireAuth();
   const anniversary = calculateAnniversary(data.foundationYear);
   const company = await prisma.company.create({
     data: {
@@ -80,6 +82,7 @@ export async function createCompany(data: CompanyInput) {
 }
 
 export async function updateCompany(id: string, data: CompanyInput) {
+  await requireAuth();
   const existing = await prisma.company.findUnique({ where: { id }, include: { contacts: true, events: true } });
   if (!existing) throw new Error("Company not found");
 
@@ -137,12 +140,14 @@ export async function updateCompany(id: string, data: CompanyInput) {
 }
 
 export async function deleteCompany(id: string) {
+  await requireAuth();
   await prisma.company.delete({ where: { id } });
   revalidatePath("/companies");
   revalidatePath("/leads");
 }
 
 export async function createContact(companyId: string, data: { name: string; role?: string; email?: string; linkedIn?: string; isPrimary?: boolean }) {
+  await requireAuth();
   if (data.isPrimary) {
     await prisma.contact.updateMany({ where: { companyId }, data: { isPrimary: false } });
   }
@@ -155,6 +160,7 @@ export async function createContact(companyId: string, data: { name: string; rol
 }
 
 export async function deleteContact(id: string, companyId: string) {
+  await requireAuth();
   await prisma.contact.delete({ where: { id } });
   await refreshLeadScore(companyId);
   revalidatePath(`/companies/${companyId}`);
@@ -189,6 +195,7 @@ async function refreshLeadScore(companyId: string) {
 }
 
 export async function addResearchSource(companyId: string, data: { title: string; url?: string; sourceType: string; content?: string }) {
+  await requireAuth();
   const source = await prisma.researchSource.create({
     data: { companyId, ...data },
   });
@@ -200,6 +207,7 @@ export async function addHistoricalClaim(
   companyId: string,
   data: { claim: string; claimType?: string; sourceId?: string; sourceExcerpt?: string; sourceDate?: string; confidence: number; status?: string }
 ) {
+  await requireAuth();
   const claim = await prisma.historicalClaim.create({
     data: {
       companyId,
@@ -215,6 +223,7 @@ export async function addHistoricalEvent(
   companyId: string,
   data: { year?: number; date?: string; title: string; description?: string; source?: string; sourceUrl?: string; excerpt?: string; confidence: number; status?: string; isMilestone?: boolean }
 ) {
+  await requireAuth();
   const event = await prisma.historicalEvent.create({
     data: {
       companyId,
@@ -228,6 +237,7 @@ export async function addHistoricalEvent(
 }
 
 export async function runResearch(companyId: string) {
+  await requireAuth();
   const company = await prisma.company.findUnique({ where: { id: companyId } });
   if (!company) throw new Error("Company not found");
 
@@ -280,6 +290,7 @@ export async function runResearch(companyId: string) {
 }
 
 export async function generatePreview(companyId: string) {
+  await requireAuth();
   const content = await generatePreviewContent(companyId);
   const preview = await prisma.preview.create({
     data: {
@@ -304,6 +315,7 @@ export async function generatePreview(companyId: string) {
 }
 
 export async function generateOutreach(leadId: string) {
+  await requireAuth();
   const draft = await generateOutreachDraft(leadId);
   const message = await prisma.outreachMessage.create({
     data: {
@@ -326,6 +338,7 @@ export async function generateOutreach(leadId: string) {
 }
 
 export async function approveOutreach(messageId: string) {
+  await requireAuth();
   const message = await prisma.outreachMessage.update({
     where: { id: messageId },
     data: { isApproved: true },
@@ -339,6 +352,7 @@ export async function approveOutreach(messageId: string) {
 }
 
 export async function sendOutreach(messageId: string) {
+  await requireAuth();
   const message = await prisma.outreachMessage.findUnique({ where: { id: messageId }, include: { lead: { include: { company: true } } } });
   if (!message) throw new Error("Message not found");
   if (!message.isApproved) throw new Error("Message must be approved before sending");
@@ -366,6 +380,7 @@ export async function sendOutreach(messageId: string) {
 }
 
 export async function addActivity(leadId: string, type: string, note?: string) {
+  await requireAuth();
   const activity = await prisma.outreachActivity.create({
     data: { leadId, type, note },
   });
@@ -409,6 +424,7 @@ function deriveNextAction(stage: string): string {
 }
 
 export async function updateLeadStage(leadId: string, stage: string) {
+  await requireAuth();
   const lead = await prisma.lead.update({
     where: { id: leadId },
     data: { stage, nextAction: deriveNextAction(stage) },
@@ -419,6 +435,7 @@ export async function updateLeadStage(leadId: string, stage: string) {
 }
 
 export async function importCompaniesCsv(csvText: string) {
+  await requireAuth();
   const parsed = Papa.parse<Record<string, string>>(csvText, { header: true, skipEmptyLines: true });
   const rows = parsed.data;
   const created: string[] = [];

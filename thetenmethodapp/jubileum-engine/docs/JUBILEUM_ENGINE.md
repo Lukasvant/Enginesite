@@ -120,7 +120,7 @@ The build command runs `prisma generate && prisma migrate deploy && next build`,
 
 ### 5. Seed demo data
 
-After the first deploy, visit:
+Log in with `ADMIN_PASSWORD`, then visit:
 
 ```
 https://your-domain.vercel.app/setup

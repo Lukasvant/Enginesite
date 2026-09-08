@@ -1,8 +1,10 @@
 "use server";
 
 import { prisma } from "@/app/lib/prisma";
+import { requireAuth } from "@/app/lib/auth";
 
 export async function seedDemoData() {
+  await requireAuth();
   const existing = await prisma.company.count();
   if (existing > 0) return { created: 0, message: "Database already contains companies; skipping seed." };
 

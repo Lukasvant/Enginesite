@@ -2,8 +2,10 @@ export const dynamic = "force-dynamic";
 
 import { seedDemoData } from "@/app/actions/seed";
 import Link from "next/link";
+import { requireAuth } from "@/app/lib/auth";
 
 export default async function SetupPage() {
+  await requireAuth();
   const result = await seedDemoData();
 
   return (

@@ -2,8 +2,10 @@
 
 import { prisma } from "@/app/lib/prisma";
 import { calculateAnniversary } from "@/app/lib/anniversary";
+import { requireAuth } from "@/app/lib/auth";
 
 export async function getCompanies() {
+  await requireAuth();
   const companies = await prisma.company.findMany({
     include: { leads: true, contacts: true, events: true },
     orderBy: { createdAt: "desc" },
@@ -16,6 +18,7 @@ export async function getCompanies() {
 }
 
 export async function getCompany(id: string) {
+  await requireAuth();
   const company = await prisma.company.findUnique({
     where: { id },
     include: {

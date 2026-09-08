@@ -45,7 +45,7 @@ Login at `http://localhost:3000/login` with the password from `ADMIN_PASSWORD` i
    - `ADMIN_PASSWORD` — strong admin password
    - `NEXT_PUBLIC_APP_URL` — `https://your-domain.vercel.app`
 4. Push to your default branch. Vercel will run `npm run build`, which applies migrations automatically.
-5. After the first deploy, visit `https://your-domain.vercel.app/setup` to seed the demo company.
+5. Log in with `ADMIN_PASSWORD`, then visit `https://your-domain.vercel.app/setup` to seed the demo company.
 
 ## Environment variables
 
@@ -53,7 +53,7 @@ Copy `.env.example` to `.env` and fill in:
 
 ```env
 DATABASE_URL="postgresql://..."
-ADMIN_PASSWORD="jubileum-admin"
+ADMIN_PASSWORD="replace-with-a-long-unique-password"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
