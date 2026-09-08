@@ -351,13 +351,27 @@ export async function approveOutreach(messageId: string) {
   return message;
 }
 
-export async function sendOutreach(messageId: string) {
+export async function updateOutreachMessage(messageId: string, data: { subject: string; body: string }) {
+  await requireAuth();
+  const message = await prisma.outreachMessage.findUnique({ where: { id: messageId } });
+  if (!message) throw new Error("Message not found");
+  if (message.sentAt) throw new Error("A sent message cannot be edited");
+
+  const updated = await prisma.outreachMessage.update({
+    where: { id: messageId },
+    data: { subject: data.subject.trim() || null, body: data.body.trim() },
+  });
+  revalidatePath(`/leads/${message.leadId}`);
+  return updated;
+}
+
+export async function markOutreachSent(messageId: string) {
   await requireAuth();
   const message = await prisma.outreachMessage.findUnique({ where: { id: messageId }, include: { lead: { include: { company: true } } } });
   if (!message) throw new Error("Message not found");
   if (!message.isApproved) throw new Error("Message must be approved before sending");
 
-  // Placeholder: real sending requires email/LinkedIn provider credentials.
+  // Sending happens outside this app. This only records the user's confirmed action.
   await prisma.outreachMessage.update({
     where: { id: messageId },
     data: { sentAt: new Date() },
@@ -370,13 +384,18 @@ export async function sendOutreach(messageId: string) {
     data: {
       leadId: message.leadId,
       type: "FOLLOW_UP",
-      note: `Outreach sent via ${message.channel}.`,
+      note: `Handmatig verstuurd via ${message.channel}.`,
     },
   });
 
   revalidatePath(`/leads/${message.leadId}`);
   revalidatePath("/leads");
   return message;
+}
+
+// Kept for existing callers; this function never sends an email itself.
+export async function sendOutreach(messageId: string) {
+  return markOutreachSent(messageId);
 }
 
 export async function addActivity(leadId: string, type: string, note?: string) {

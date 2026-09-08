@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { addActivity, updateLeadStage } from "@/app/actions/companies";
+import { OutreachWorkspace } from "@/app/components/OutreachWorkspace";
 
 export default function LeadDetailPage({ lead }: { lead: any }) {
   const router = useRouter();
@@ -53,18 +54,7 @@ export default function LeadDetailPage({ lead }: { lead: any }) {
         </div>
       </div>
 
-      {lead.outreachMessages.length > 0 && (
-        <div className="bg-white p-6 rounded-lg border border-stone-200 mb-8">
-          <h2 className="text-lg font-semibold mb-4">Outreach</h2>
-          {lead.outreachMessages.map((m: any) => (
-            <div key={m.id} className="mb-4 border border-stone-100 rounded p-3">
-              <div className="text-sm font-medium">{m.subject}</div>
-              <div className="text-xs text-stone-500 mb-2">{m.isApproved ? (m.sentAt ? "Verzonden" : "Goedgekeurd") : "Concept"}</div>
-              <pre className="whitespace-pre-wrap font-sans text-sm text-stone-700 bg-stone-50 p-2 rounded">{m.body}</pre>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="mb-8"><OutreachWorkspace lead={lead} /></div>
 
       <div className="bg-white p-6 rounded-lg border border-stone-200 mb-8">
         <h2 className="text-lg font-semibold mb-4">Activiteit</h2>
