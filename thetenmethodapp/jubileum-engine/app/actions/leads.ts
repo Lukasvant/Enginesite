@@ -50,3 +50,15 @@ export async function getLead(id: string) {
     anniversary: calculateAnniversary(lead.company.foundationYear),
   };
 }
+
+function localDateKey(date = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris" }).format(date);
+}
+
+export async function getTodayOutreachBatch() {
+  await requireAuth();
+  return prisma.dailyOutreachBatch.findUnique({
+    where: { date: localDateKey() },
+    include: { items: { include: { lead: { include: { company: true } } }, orderBy: { createdAt: "asc" } } },
+  });
+}

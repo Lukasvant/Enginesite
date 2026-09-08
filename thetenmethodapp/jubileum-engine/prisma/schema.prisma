@@ -37,6 +37,7 @@ model Company {
   events          HistoricalEvent[]
   previews        Preview[]
   costRecords     CostRecord[]
+  dailyOutreachItems DailyOutreachItem[]
 
   @@index([name])
   @@index([foundationYear])
@@ -70,6 +71,31 @@ model Lead {
   company         Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
   outreachMessages OutreachMessage[]
   outreachActivities OutreachActivity[]
+  dailyOutreachItems DailyOutreachItem[]
+}
+
+model DailyOutreachBatch {
+  id        String   @id @default(uuid())
+  date      String   @unique // Local calendar date, e.g. 2026-09-08
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items DailyOutreachItem[]
+}
+
+model DailyOutreachItem {
+  id        String   @id @default(uuid())
+  batchId   String
+  leadId    String
+  companyId String
+  createdAt DateTime @default(now())
+
+  batch   DailyOutreachBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  lead    Lead               @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  company Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([batchId, leadId])
+  @@index([companyId])
 }
 
 model ResearchSource {

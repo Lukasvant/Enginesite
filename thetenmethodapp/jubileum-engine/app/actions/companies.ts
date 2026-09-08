@@ -453,6 +453,60 @@ export async function updateLeadStage(leadId: string, stage: string) {
   return lead;
 }
 
+function localDateKey(date = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris" }).format(date);
+}
+
+export async function toggleTodayOutreachLead(leadId: string, selected: boolean) {
+  await requireAuth();
+  const lead = await prisma.lead.findUnique({ where: { id: leadId } });
+  if (!lead) throw new Error("Lead not found");
+  const batch = await prisma.dailyOutreachBatch.upsert({
+    where: { date: localDateKey() },
+    create: { date: localDateKey() },
+    update: {},
+  });
+
+  if (selected) {
+    await prisma.dailyOutreachItem.upsert({
+      where: { batchId_leadId: { batchId: batch.id, leadId } },
+      create: { batchId: batch.id, leadId, companyId: lead.companyId },
+      update: {},
+    });
+  } else {
+    await prisma.dailyOutreachItem.deleteMany({ where: { batchId: batch.id, leadId } });
+  }
+  revalidatePath("/leads");
+}
+
+export async function prepareTodayOutreach() {
+  await requireAuth();
+  const batch = await prisma.dailyOutreachBatch.findUnique({
+    where: { date: localDateKey() },
+    include: { items: { include: { lead: true } }, },
+  });
+  if (!batch?.items.length) return { prepared: 0 };
+
+  let prepared = 0;
+  for (const item of batch.items) {
+    const existingPreview = await prisma.preview.findFirst({ where: { companyId: item.companyId, isPublished: true }, orderBy: { createdAt: "desc" } });
+    if (!existingPreview) {
+      const content = await generatePreviewContent(item.companyId);
+      await prisma.preview.create({ data: { companyId: item.companyId, title: content.title, intro: content.intro, milestones: JSON.stringify(content.milestones), closing: content.closing, isPublished: true } });
+    }
+    const unsent = await prisma.outreachMessage.findFirst({ where: { leadId: item.leadId, sentAt: null }, orderBy: { createdAt: "desc" } });
+    if (!unsent) {
+      const draft = await generateOutreachDraft(item.leadId);
+      await prisma.outreachMessage.create({ data: { leadId: item.leadId, channel: draft.channel, subject: draft.subject, body: draft.body } });
+    }
+    await prisma.lead.update({ where: { id: item.leadId }, data: { stage: LEAD_STAGE.OUTREACH_READY, nextAction: "Controleer concept en verstuur handmatig" } });
+    prepared++;
+  }
+  revalidatePath("/leads");
+  revalidatePath("/previews");
+  return { prepared };
+}
+
 export async function importCompaniesCsv(csvText: string) {
   await requireAuth();
   const parsed = Papa.parse<Record<string, string>>(csvText, { header: true, skipEmptyLines: true });
