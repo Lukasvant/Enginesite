@@ -25,13 +25,20 @@ export async function generatePreviewContent(companyId: string) {
     title: e.title,
     description: e.description ?? undefined,
   }));
+  if (company.foundationYear && !foundation) {
+    milestones.unshift({
+      year: company.foundationYear,
+      title: "Oprichting",
+      description: company.foundationEvidence ?? "Start van de bedrijfsgeschiedenis, op basis van een publieke bron.",
+    });
+  }
 
   const primaryContact = company.contacts.find((c) => c.isPrimary) ?? company.contacts[0];
 
   const intro =
     `Dit is een eerste verkenning van de geschiedenis van ${company.name}. ` +
     `We hebben publieke bronnen geraadpleegd om de belangrijkste momenten op een tijdlijn te zetten. ` +
-    (foundation ? `Het bedrijf werd opgericht in ${foundation.year}.` : "De oprichtingsdatum is nog niet met zekerheid vastgesteld.");
+    (foundation ? `Het bedrijf werd opgericht in ${foundation.year}.` : company.foundationYear ? `De publiek bevestigde bedrijfsgeschiedenis begint in ${company.foundationYear}.` : "De oprichtingsdatum is nog niet met zekerheid vastgesteld.");
 
   const closing =
     `Er zit waarschijnlijk nog veel meer verhaal in jullie geschiedenis. ` +
