@@ -10,6 +10,7 @@ import { generateOutreachDraft } from "@/app/lib/outreach";
 import { CLAIM_STATUS, LEAD_STAGE } from "@/app/lib/constants";
 import Papa from "papaparse";
 import { requireAuth } from "@/app/lib/auth";
+import { getMailConfiguration } from "@/app/lib/email";
 
 export type CompanyInput = {
   name: string;
@@ -393,9 +394,36 @@ export async function markOutreachSent(messageId: string) {
   return message;
 }
 
-// Kept for existing callers; this function never sends an email itself.
 export async function sendOutreach(messageId: string) {
-  return markOutreachSent(messageId);
+  await requireAuth();
+  const message = await prisma.outreachMessage.findUnique({
+    where: { id: messageId },
+    include: { lead: { include: { company: { include: { contacts: true } } } } },
+  });
+  if (!message) throw new Error("Message not found");
+  if (!message.isApproved) throw new Error("Message must be approved before sending");
+  if (message.sentAt) throw new Error("Message has already been sent");
+
+  const recipient = message.lead.company.contacts.find((contact) => contact.isPrimary && contact.email)
+    ?? message.lead.company.contacts.find((contact) => contact.email);
+  if (!recipient?.email) throw new Error("Voeg eerst een contactpersoon met e-mailadres toe");
+
+  const mail = getMailConfiguration();
+  if (!mail.transporter) throw new Error("Infomaniak is nog niet ingesteld. Voeg INFOMANIAK_SMTP_PASSWORD toe in Vercel.");
+
+  await mail.transporter.sendMail({
+    from: mail.from,
+    to: recipient.email,
+    subject: message.subject ?? `Jubileumverhaal voor ${message.lead.company.name}`,
+    text: message.body,
+  });
+
+  await prisma.outreachMessage.update({ where: { id: messageId }, data: { sentAt: new Date() } });
+  await prisma.lead.update({ where: { id: message.leadId }, data: { stage: LEAD_STAGE.CONTACTED, nextAction: "Follow up" } });
+  await prisma.outreachActivity.create({ data: { leadId: message.leadId, type: "FOLLOW_UP", note: `Verstuurd via Infomaniak naar ${recipient.email}.` } });
+  revalidatePath(`/leads/${message.leadId}`);
+  revalidatePath("/leads");
+  return message;
 }
 
 export async function addActivity(leadId: string, type: string, note?: string) {

@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { approveOutreach, generateOutreach, markOutreachSent, updateOutreachMessage } from "@/app/actions/companies";
+import { approveOutreach, generateOutreach, markOutreachSent, sendOutreach, updateOutreachMessage } from "@/app/actions/companies";
 
-export function OutreachWorkspace({ lead }: { lead: any }) {
+export function OutreachWorkspace({ lead, mailConfigured }: { lead: any; mailConfigured: boolean }) {
   const router = useRouter();
   const latest = lead.outreachMessages[0];
   const [subject, setSubject] = useState(latest?.subject ?? "");
@@ -27,7 +27,7 @@ export function OutreachWorkspace({ lead }: { lead: any }) {
       <div className="bg-stone-900 text-white rounded-lg p-5">
         <p className="text-xs uppercase tracking-wide text-stone-300">Volgende stap</p>
         <p className="text-lg font-medium mt-1">{lead.nextAction ?? "Bereid persoonlijk contact voor"}</p>
-        <p className="text-sm text-stone-300 mt-2">De app verstuurt niets automatisch. Je kopieert het concept naar je eigen kanaal en markeert het daarna hier als verstuurd.</p>
+        <p className="text-sm text-stone-300 mt-2">Je verstuurt pas nadat je het concept hebt gecontroleerd en zelf op de verzendknop klikt.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -52,7 +52,9 @@ export function OutreachWorkspace({ lead }: { lead: any }) {
           <input value={subject} disabled={Boolean(latest.sentAt)} onChange={(event) => setSubject(event.target.value)} placeholder="Onderwerp" className="w-full rounded border border-stone-300 px-3 py-2 text-sm" />
           <textarea value={body} disabled={Boolean(latest.sentAt)} onChange={(event) => setBody(event.target.value)} rows={14} className="w-full rounded border border-stone-300 px-3 py-2 text-sm leading-6" />
           {!latest.sentAt && <div className="flex flex-wrap gap-2"><button disabled={busy} onClick={() => run(() => updateOutreachMessage(latest.id, { subject, body }))} className="border border-stone-300 px-3 py-2 rounded text-sm disabled:opacity-50">Concept opslaan</button>{!latest.isApproved && <button disabled={busy} onClick={() => run(() => approveOutreach(latest.id))} className="bg-stone-900 text-white px-3 py-2 rounded text-sm disabled:opacity-50">Concept goedkeuren</button>}</div>}
-          <div className="pt-2 border-t border-stone-100 flex flex-wrap gap-2"><button disabled={busy} onClick={copyMessage} className="border border-stone-300 px-3 py-2 rounded text-sm disabled:opacity-50">Kopieer tekst</button>{latest.isApproved && !latest.sentAt && <button disabled={busy} onClick={() => run(() => markOutreachSent(latest.id))} className="bg-blue-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50">Ik heb dit handmatig verstuurd</button>}</div>
+          <div className="pt-2 border-t border-stone-100 flex flex-wrap gap-2"><button disabled={busy} onClick={copyMessage} className="border border-stone-300 px-3 py-2 rounded text-sm disabled:opacity-50">Kopieer tekst</button>{latest.isApproved && !latest.sentAt && <>{mailConfigured && contact?.email && <button disabled={busy} onClick={() => run(() => sendOutreach(latest.id))} className="bg-emerald-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50">Verstuur via Ambachtio</button>}<button disabled={busy} onClick={() => run(() => markOutreachSent(latest.id))} className="bg-blue-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50">Ik heb dit handmatig verstuurd</button></>}</div>
+          {!mailConfigured && <p className="text-xs text-amber-700">Automatisch versturen is nog niet gekoppeld aan Infomaniak. Je kunt de tekst wel kopiëren of handmatig als verstuurd registreren.</p>}
+          {mailConfigured && !contact?.email && <p className="text-xs text-amber-700">Voeg eerst een contactpersoon met e-mailadres toe voordat je rechtstreeks kunt versturen.</p>}
         </div>
       )}
     </section>

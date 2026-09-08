@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { addActivity, updateLeadStage } from "@/app/actions/companies";
 import { OutreachWorkspace } from "@/app/components/OutreachWorkspace";
 
-export default function LeadDetailPage({ lead }: { lead: any }) {
+export default function LeadDetailPage({ lead, mailConfigured }: { lead: any; mailConfigured: boolean }) {
   const router = useRouter();
 
   async function handleNote(formData: FormData) {
@@ -54,7 +54,7 @@ export default function LeadDetailPage({ lead }: { lead: any }) {
         </div>
       </div>
 
-      <div className="mb-8"><OutreachWorkspace lead={lead} /></div>
+      <div className="mb-8"><OutreachWorkspace lead={lead} mailConfigured={mailConfigured} /></div>
 
       <div className="bg-white p-6 rounded-lg border border-stone-200 mb-8">
         <h2 className="text-lg font-semibold mb-4">Activiteit</h2>
