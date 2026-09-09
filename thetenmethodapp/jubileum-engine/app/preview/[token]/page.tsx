@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
 import { prisma } from "@/app/lib/prisma";
+import { getEraContext } from "@/app/lib/era-context";
 
 export default async function PreviewPage({ params }: { params: { token: string } }) {
   const preview = await prisma.preview.findUnique({
@@ -15,6 +16,7 @@ export default async function PreviewPage({ params }: { params: { token: string 
   const foundationYear = preview.company.foundationYear;
   const currentYear = new Date().getFullYear();
   const age = foundationYear ? currentYear - foundationYear : null;
+  const era = getEraContext(foundationYear);
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -46,6 +48,16 @@ export default async function PreviewPage({ params }: { params: { token: string 
         <section className="bg-white p-8 md:p-10 rounded-lg border border-stone-200 shadow-sm mb-10">
           <p className="text-lg text-stone-700 leading-relaxed">{preview.intro}</p>
         </section>
+
+        {era && <section className="mb-10 rounded-lg border border-amber-200 bg-amber-50 p-6 md:p-8">
+          <div className="flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between">
+            <div><p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-800">De wereld toen {preview.company.name} begon</p><h2 className="mt-2 text-2xl font-semibold text-stone-900">{era.headline}</h2></div>
+            <span className="text-sm text-amber-900">{era.period}</span>
+          </div>
+          <p className="mt-4 max-w-2xl text-stone-700 leading-relaxed">{era.description}</p>
+          <a href={era.sourceUrl} target="_blank" rel="noreferrer" className="mt-4 inline-block text-xs text-amber-900 underline">Contextbron: {era.sourceLabel}</a>
+          <p className="mt-3 text-xs text-stone-500">Deze tijdscontext is redactioneel en staat los van de geverifieerde bedrijfsgeschiedenis hierboven.</p>
+        </section>}
 
         <section className="relative border-l-2 border-stone-300 ml-4 md:ml-8 mb-12">
           {milestones.map((m, i) => (
