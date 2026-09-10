@@ -7,14 +7,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-stone-900 text-white px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-4">
           <Link href="/dashboard" className="font-semibold text-lg">
             Jubileum Engine
           </Link>
-          <nav className="hidden md:flex gap-4 text-sm">
+          <nav className="flex flex-wrap gap-3 text-sm">
             <Link href="/dashboard" className="hover:text-stone-300">Dashboard</Link>
             <Link href="/companies" className="hover:text-stone-300">Bedrijven</Link>
             <Link href="/leads" className="hover:text-stone-300">Leads</Link>
+            <Link href="/products" className="hover:text-stone-300">Producten</Link>
             <Link href="/previews" className="hover:text-stone-300">Previews</Link>
           </nav>
         </div>

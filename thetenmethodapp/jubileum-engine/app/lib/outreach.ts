@@ -42,7 +42,7 @@ export async function generateOutreachDraft(leadId: string, channel: "EMAIL" | "
     `Hoi ${contactName},\n\n` +
     `Ik dook even in de geschiedenis van ${lead.company.name} en kwam onder andere ${eventSentences || "interessante momenten in jullie bedrijfsgeschiedenis"} tegen.\n\n` +
     `Volgens openbare bronnen komt daarnaast jullie jubileum eraan. ` +
-    `Ik heb er alvast een kleine tijdlijn van gemaakt:\n\n` +
+    `Ik heb een eerste jubileumpreview gemaakt, met een doorbladerbaar boek en voorbeelden van mogelijke uitvoeringen:\n\n` +
     `${previewUrl}\n\n` +
     `Vanuit Ambachtio help ik bedrijven om losse documenten, foto's en verhalen rond zo'n moment bij elkaar te brengen en er iets van te maken dat ze daadwerkelijk kunnen gebruiken.\n\n` +
     `Mocht dat bij jullie spelen, dan laat ik graag zien wat er mogelijk is.\n\n` +

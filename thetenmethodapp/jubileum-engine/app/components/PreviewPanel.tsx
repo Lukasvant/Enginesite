@@ -15,6 +15,7 @@ export function PreviewPanel({ companyId, previews }: { companyId: string; previ
   return (
     <div>
       <h2 className="text-lg font-semibold mb-4">Preview</h2>
+      <p className="text-sm text-stone-500 mb-3">Inclusief interactief boek, acht productmogelijkheden en een persoonlijke wensenlijst. <Link href="/products" className="underline">Bekijk het aanbod</Link></p>
       <form action={handleGenerate} className="mb-4">
         <button type="submit" className="bg-stone-900 text-white text-sm px-3 py-1 rounded">Genereer preview</button>
       </form>

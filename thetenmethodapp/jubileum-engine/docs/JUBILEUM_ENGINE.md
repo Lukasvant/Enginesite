@@ -139,3 +139,13 @@ npm run dev
 ```
 
 Visit `http://localhost:3000/setup` if you skipped seeding.
+
+## Jubilee product offer and interactive examples
+
+- `app/lib/jubilee-products.ts` is the shared eight-product catalogue used by public previews and `/products` in the authenticated app.
+- All public previews and `/demo` show the product experiences and a multi-product proposal builder. The interactive book links into these options.
+- The proposal builder opens a mail draft or downloads a text brief. It does not send email, store leads, or sync requests into the CRM. Record received requests through the existing lead workflow.
+- Examples include a schematic before/after slider, local audio playback, a personalized dedication, milestone exhibition, film storyboard, downloadable story draft, schematic atlas and succession interview outline.
+- Uploaded audio stays in browser memory; object URLs are revoked on replacement/unmount. Written demo content and selections are not persisted; visitors can download their brief or story draft.
+- Illustrations, storyboard scenes, project points and example names are explicitly conceptual. No film production, recording, upload backend, map geocoding, QR hosting or print fulfilment is implemented by these examples.
+- Agree media rights, consent, production scope, availability, planning and costs before promising delivery. No automatic pricing or booking.

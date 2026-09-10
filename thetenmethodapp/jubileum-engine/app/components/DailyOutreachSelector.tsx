@@ -33,7 +33,12 @@ export function DailyOutreachSelector({ leads, initialIds }: { leads: any[]; ini
       <div className="bg-white rounded-lg border border-stone-200 overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-stone-100"><tr><th className="w-12 px-4 py-2 text-left">Vandaag</th><th className="text-left px-4 py-2 font-medium">Bedrijf</th><th className="text-left px-4 py-2 font-medium">Jubileum</th><th className="text-left px-4 py-2 font-medium">Score</th><th className="text-left px-4 py-2 font-medium">Klaar voor contact</th></tr></thead>
-          <tbody>{leads.map((lead) => <tr key={lead.id} className="border-t border-stone-100"><td className="px-4 py-3"><input aria-label={`${lead.company.name} selecteren voor vandaag`} type="checkbox" checked={selected.has(lead.id)} onChange={() => toggle(lead.id)} className="h-4 w-4 accent-stone-900" /></td><td className="px-4 py-3"><Link href={`/leads/${lead.id}`} className="font-medium hover:underline">{lead.company.name}</Link></td><td className="px-4 py-3">{lead.anniversary.anniversaryAge ? `${lead.anniversary.anniversaryAge} jaar (${lead.anniversary.anniversaryYear})` : "—"}</td><td className="px-4 py-3">{lead.score}</td><td className="px-4 py-3 text-stone-500"><div>{lead.company.contacts.length ? "Contactpersoon bekend" : "Zoek contactpersoon"}</div><div className="text-xs mt-1">{lead.company.claims.length ? "Historie geverifieerd" : lead.nextAction}</div></td></tr>)}</tbody>
+          <tbody>{leads.map((lead) => {
+            const recipient = lead.company.contacts.find((contact: any) => contact.isPrimary && contact.email)
+              ?? lead.company.contacts.find((contact: any) => contact.email);
+
+            return <tr key={lead.id} className="border-t border-stone-100"><td className="px-4 py-3"><input aria-label={`${lead.company.name} selecteren voor vandaag`} type="checkbox" checked={selected.has(lead.id)} onChange={() => toggle(lead.id)} className="h-4 w-4 accent-stone-900" /></td><td className="px-4 py-3"><Link href={`/leads/${lead.id}`} className="font-medium hover:underline">{lead.company.name}</Link></td><td className="px-4 py-3">{lead.anniversary.anniversaryAge ? `${lead.anniversary.anniversaryAge} jaar (${lead.anniversary.anniversaryYear})` : "—"}</td><td className="px-4 py-3">{lead.score}</td><td className="px-4 py-3 text-stone-500"><div>{recipient ? `E-mail klaar: ${recipient.email}` : "Zoek contactpersoon met e-mail"}</div><div className="text-xs mt-1">{lead.company.claims.length ? "Historie geverifieerd" : lead.nextAction}</div></td></tr>;
+          })}</tbody>
         </table>
       </div>
     </>
