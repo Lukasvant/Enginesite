@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteUrl } from "./lib/seo";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
@@ -15,8 +16,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Jubileum Engine",
-  description: "Ambachtio — anniversary research and outreach",
+  metadataBase: new URL(siteUrl),
+  title: { default: "Jubileum Engine", template: "%s | Jubileum Engine" },
+  description: "Een persoonlijk jubileumboek en verhaalprogramma voor bedrijven.",
 };
 
 export default function RootLayout({

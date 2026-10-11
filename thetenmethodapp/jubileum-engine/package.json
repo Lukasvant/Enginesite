@@ -16,7 +16,8 @@
     "db:deploy": "prisma migrate deploy",
     "db:generate": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
-    "db:import-ambachtregister": "tsx scripts/import-ambachtregister.ts"
+    "db:import-ambachtregister": "tsx scripts/import-ambachtregister.ts",
+    "test:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

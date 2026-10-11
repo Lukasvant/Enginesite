@@ -1,0 +1,212 @@
+{
+  "date": "2026-10-11",
+  "deployment": "dpl_3Qq4Q9AcF5GxmXopKxDbVAJz85Rq",
+  "canonicalHost": "https://www.jubileumengine.nl",
+  "method": "Public HTTP HTML comparison; normalized visible text and parsed JSON-LD; explicit composer H1 addition excluded",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/programmas",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/samenstellen",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/jubilee-book",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/audio",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/personal",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/partner-book",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/welcome-book",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/succession",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/jubilee-newspaper",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/then-now",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/stories",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/company-history",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/atlas",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/iconic-objects",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/time-capsule",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/film",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/exhibition",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/museum-case",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/jubilee-quiz",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/personal-reveal",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/jubilee-campaign",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/mogelijkheden/annual-chapter",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/soorten/books",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/soorten/stories",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/soorten/experiences",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/soorten/communication",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/programmas/employees",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/programmas/celebrate",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/programmas/customers",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/programmas/preserve",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/demo",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    },
+    {
+      "route": "/design-review",
+      "status": 200,
+      "visibleTextMatches": true,
+      "schemaMatches": true
+    }
+  ]
+}
