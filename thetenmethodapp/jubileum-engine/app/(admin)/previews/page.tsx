@@ -1,8 +1,10 @@
 export const dynamic = "force-dynamic";
 
+import { requireAuth } from "@/app/lib/auth";
 import { prisma } from "@/app/lib/prisma";
 
 export default async function PreviewsPage() {
+  await requireAuth();
   const previews = await prisma.preview.findMany({
     where: { isPublished: true },
     include: { company: true },
