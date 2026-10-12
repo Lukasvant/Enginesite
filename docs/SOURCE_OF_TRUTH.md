@@ -29,6 +29,6 @@ Eigen canonicals en unieke metadata voor alle publieke routes, zonder dubbele me
 
 ## Veilige releasegrens
 
-Deze branch is niet naar productie gedeployd. Er is geen DNS-, domein-, hosting- of databaseconfiguratie gewijzigd. Builds van Vercel-previews voeren nooit prisma migrate deploy uit, ook niet bij CI=true of ontbrekende VERCEL_ENV. Bestaand productie-/standalone-CI-migratiegedrag blijft behouden.
+Deze branch is niet naar productie gedeployd. Er is geen DNS-, domein-, hosting- of databaseconfiguratie gewijzigd. Builds van Vercel-previews voeren nooit prisma migrate deploy uit, ook niet bij CI=true of ontbrekende VERCEL_ENV. Automatische migraties op productie/CI vereisen voortaan expliciet JUBILEUM_RUN_MIGRATIONS=1; previews migreren nooit. Het bestaande handmatige db:deploy-commando blijft beschikbaar. Voor deze SEO-release is geen opt-in ingesteld.
 
 Publiceer deze code alleen naar project enginesite met de bovenstaande root; nooit vanuit de CRM-directory of het previewarchief. Voor een toekomstige productie-uitrol: controleer actuele deployment-ID/aliases opnieuw, test een preview met gescheiden databinding, controleer bestaande private backendflows zonder uitgaande mail en leg het vorige deployment-ID als rollback vast. Deze opdracht heeft geen echte mail, formulieraanvraag, seed of databasemigratie uitgevoerd.

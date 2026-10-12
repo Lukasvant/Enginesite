@@ -13,11 +13,12 @@ function commands(env: Record<string, string>) {
 }
 
 test('a Vercel preview never migrates, even when CI and database URL are present', () => {
-  expect(commands({ VERCEL: '1', VERCEL_ENV: 'preview', CI: 'true', DATABASE_URL: 'postgresql://test.invalid/db' })).toEqual(['npx prisma generate', 'next build']);
-  expect(commands({ VERCEL: '1', CI: 'true', DATABASE_URL: 'postgresql://test.invalid/db' })).not.toContain('npx prisma migrate deploy');
+  expect(commands({ VERCEL: '1', VERCEL_ENV: 'preview', CI: 'true', JUBILEUM_RUN_MIGRATIONS: '1', DATABASE_URL: 'postgresql://test.invalid/db' })).toEqual(['npx prisma generate', 'next build']);
+  expect(commands({ VERCEL: '1', CI: 'true', JUBILEUM_RUN_MIGRATIONS: '1', DATABASE_URL: 'postgresql://test.invalid/db' })).not.toContain('npx prisma migrate deploy');
 });
 
-test('production retains its migration behavior; local builds stay read-only', () => {
-  expect(commands({ VERCEL: '1', VERCEL_ENV: 'production', DATABASE_URL: 'postgresql://test.invalid/db' })).toContain('npx prisma migrate deploy');
+test('production requires migration opt-in; local builds stay read-only', () => {
+  expect(commands({ VERCEL: '1', VERCEL_ENV: 'production', DATABASE_URL: 'postgresql://test.invalid/db' })).not.toContain('npx prisma migrate deploy');
+  expect(commands({ VERCEL: '1', VERCEL_ENV: 'production', JUBILEUM_RUN_MIGRATIONS: '1', DATABASE_URL: 'postgresql://test.invalid/db' })).toContain('npx prisma migrate deploy');
   expect(commands({ DATABASE_URL: 'postgresql://test.invalid/db' })).not.toContain('npx prisma migrate deploy');
 });

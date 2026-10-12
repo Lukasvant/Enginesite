@@ -8,7 +8,8 @@ function run(command) {
 console.log("Running prisma generate...");
 run("npx prisma generate");
 
-// Only production Vercel builds may migrate; previews can share the production database.
+// Database migrations require a separate, explicit release decision.
+// Preview builds never migrate, even with the opt-in flag.
 // Locally we skip migrate deploy so `npm run build` works without a local Postgres.
 const isVercel = process.env.VERCEL === "1";
 const isCi = process.env.CI === "true" || process.env.CI === "1";
@@ -16,11 +17,12 @@ const dbUrl = process.env.DATABASE_URL || "";
 const isPostgres = dbUrl.startsWith("postgresql") || dbUrl.startsWith("postgres");
 
 const mayMigrate = (isVercel && process.env.VERCEL_ENV === "production") || (!isVercel && isCi);
-if (mayMigrate && isPostgres) {
+const migrationApproved = process.env.JUBILEUM_RUN_MIGRATIONS === "1";
+if (mayMigrate && isPostgres && migrationApproved) {
   console.log("Running prisma migrate deploy...");
   run("npx prisma migrate deploy");
 } else {
-  console.log("Skipping prisma migrate deploy (only runs automatically on Vercel/CI).");
+  console.log("Skipping prisma migrate deploy (requires eligible production/CI and explicit JUBILEUM_RUN_MIGRATIONS=1).");
 }
 
 console.log("Running next build...");
