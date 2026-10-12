@@ -29,7 +29,7 @@ Productiebuild en typecheck geslaagd; lint zonder waarschuwingen/fouten; 23/23 t
 
 ## Risico's en handmatige vervolgstappen
 
-- Productie blijft intact; een daadwerkelijke productie-uitrol is niet onderdeel van deze bronreconciliatie.
+- PR #1 is na expliciet akkoord gepubliceerd. Alle 32 publieke SEO-routes en mobiele interacties zijn live gecontroleerd. De vervolgpatch zet logincontrole vóór de bestaande previews-query; dit voorkomt de tijdens releasecontrole ook op oude productie bevestigde databaseconfiguratiemelding bij anonieme bezoeken. 25 tests, lint en typecheck slagen; geen databaseconfiguratie of gegevens gewijzigd.
 - Volledige CLI-source/ongecommitte backendverschillen zijn niet bewezen. Controleer afzonderlijke backendflows voor een toekomstige release; verstuur geen mail als test zonder expliciete richting.
 - Sitemapweergave bewijst indexeerbaarheid, geen indexering. Google Search Console/Bing Webmaster Tools moeten het bestaande www-domein meten: geïndexeerde publieke routes, zoekvragen, organische bezoeken, samenstellergebruik en gekwalificeerde aanvragen afzonderlijk volgen.
 - Bestaande analytics blijven beschikbaar. Geen Search Console/Bing-accounttoegang of export gekregen; geen kwantitatieve nulmeting of AI-citatiebaseline verzonnen. AI-referrers en vaste Nederlandse koopvragen later afzonderlijk volgen.
