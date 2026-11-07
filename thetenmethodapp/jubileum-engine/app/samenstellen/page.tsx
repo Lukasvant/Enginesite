@@ -1,4 +1,4 @@
 import { pageMetadata } from "@/app/lib/seo";
 import Link from "next/link";import { JubileeComposer } from "@/app/components/JubileeComposer";import s from "../components/jubilee-public.module.css";
-export const metadata = pageMetadata("/samenstellen", "Jubileumwensen samenstellen", "Verken jullie aanleiding, doelgroep, materialen en gewenste jubileumvormen. Bewaar keuzes op dit apparaat en open zelf een e-mailconcept.");
+export const metadata = pageMetadata("/samenstellen", "Jubileumwensen samenstellen", "Kies de onderdelen voor jullie jubileum, bewaar de selectie op dit apparaat en open zelf een e-mailconcept om de wensen te bespreken.");
 export default function Compose(){return <main className={s.page}><header className={s.nav}><Link className={s.brand} href="/">Jubileum Engine</Link><nav className={s.navLinks}><Link href="/mogelijkheden">Mogelijkheden</Link><Link href="/programmas">Programma’s</Link></nav></header><section className={s.section}><h1>Stel jullie jubileumwensen samen.</h1></section><JubileeComposer/></main>}
